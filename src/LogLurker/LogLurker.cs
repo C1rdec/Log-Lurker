@@ -77,7 +77,7 @@ namespace LogLurker
             while (newLines.Count() == 0);
 
             _lastLine = newLines.First();
-            foreach (var line in newLines.Reverse())
+            foreach (var line in newLines)
             {
                 NewLine?.Invoke(this, line);
             }
@@ -104,7 +104,7 @@ namespace LogLurker
                 currentNewLine = PreviousLine(stream);
             }
 
-            return newLines;
+            return newLines.Reverse();
         }
 
         private static string PreviousLine(Stream stream)
