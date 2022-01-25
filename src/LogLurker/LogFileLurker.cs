@@ -3,7 +3,7 @@ using Timer = System.Timers.Timer;
 
 namespace LogLurker
 {
-    public class LogLurker : IDisposable
+    public class LogFileLurker : IDisposable
     {
         #region Fields
 
@@ -16,12 +16,12 @@ namespace LogLurker
 
         #region Constructors
 
-        public LogLurker(string filePath)
+        public LogFileLurker(string filePath)
             : this(filePath, DefaultInterval)
         {
         }
 
-        public LogLurker(string filePath, int interval)
+        public LogFileLurker(string filePath, int interval)
         {
             FilePath = filePath;
             _interval = interval;
