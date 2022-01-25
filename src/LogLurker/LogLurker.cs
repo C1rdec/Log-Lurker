@@ -72,11 +72,11 @@ namespace LogLurker
             IEnumerable<string> newLines;
             do
             {
-                newLines = this.GetNewLines();
+                newLines = GetNewLines();
             }
             while (newLines.Count() == 0);
 
-            this._lastLine = newLines.First();
+            _lastLine = newLines.First();
             foreach (var line in newLines.Reverse())
             {
                 NewLine?.Invoke(this, line);
@@ -85,7 +85,7 @@ namespace LogLurker
 
         private IEnumerable<string> GetNewLines()
         {
-            using var stream = new FileStream(this.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var stream = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
             if (stream.Length == 0)
             {
@@ -98,7 +98,7 @@ namespace LogLurker
             var currentNewLine = PreviousLine(stream);
             var newLines = new List<string>();
 
-            while (this._lastLine != currentNewLine)
+            while (_lastLine != currentNewLine)
             {
                 newLines.Add(currentNewLine);
                 currentNewLine = PreviousLine(stream);
