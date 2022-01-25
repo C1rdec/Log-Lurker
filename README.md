@@ -1,4 +1,4 @@
-```
+```cs
 using LogLurker;
 
 var lurker = new LogFileLurker("FileName");
