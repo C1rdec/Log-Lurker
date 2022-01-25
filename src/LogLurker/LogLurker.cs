@@ -7,9 +7,10 @@ namespace LogLurker
     {
         #region Fields
 
-        private static readonly int DefaultInterval = 800;
+        private static readonly int DefaultInterval = 300;
         private string _lastLine;
-        private Timer _timer;
+        private CancellationTokenSource _tokenSource;
+        private int _interval;
 
         #endregion
 
@@ -23,8 +24,8 @@ namespace LogLurker
         public LogLurker(string filePath, int interval)
         {
             FilePath = filePath;
-            _timer = new Timer(interval);
-            _timer.Elapsed += Timer_Elapsed;
+            _interval = interval;
+            _tokenSource = new CancellationTokenSource();
         }
 
         #endregion
@@ -43,14 +44,38 @@ namespace LogLurker
 
         #region Methods
 
-        public void Lurk()
+        public async Task Lurk()
         {
-            _timer.Start();
+            _tokenSource = new CancellationTokenSource();
+            _lastLine = GetLastLine();
+
+            var token = _tokenSource.Token;
+            while (true)
+            {
+                IEnumerable<string> newLines;
+                do
+                {
+                    await Task.Delay(_interval);
+                    newLines = GetNewLines();
+                    if (token.IsCancellationRequested)
+                    {
+                        return;
+                    }
+                }
+                while (newLines.Count() == 0);
+
+                _lastLine = newLines.First();
+                foreach (var line in newLines.Reverse())
+                {
+                    NewLine?.Invoke(NewLine, line);
+                }
+            }
         }
 
         public void Stop()
         {
-            _timer.Stop();
+            _tokenSource.Cancel();
+            _tokenSource.Dispose();
         }
 
         public void Dispose()
@@ -62,25 +87,6 @@ namespace LogLurker
         {
             if (disposing)
             {
-                _timer.Stop();
-                _timer.Dispose();
-                _timer.Elapsed -= Timer_Elapsed;
-            }
-        }
-
-        private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
-        {
-            IEnumerable<string> newLines;
-            do
-            {
-                newLines = GetNewLines();
-            }
-            while (newLines.Count() == 0);
-
-            _lastLine = newLines.First();
-            foreach (var line in newLines)
-            {
-                NewLine?.Invoke(this, line);
             }
         }
 
@@ -107,6 +113,21 @@ namespace LogLurker
 
             newLines.Reverse();
             return newLines;
+        }
+
+        private string GetLastLine()
+        {
+            using (var stream = new FileStream(this.FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                if (stream.Length == 0)
+                {
+                    return string.Empty;
+                }
+
+                stream.Position = stream.Length - 1;
+
+                return PreviousLine(stream);
+            }
         }
 
         private static string PreviousLine(Stream stream)
