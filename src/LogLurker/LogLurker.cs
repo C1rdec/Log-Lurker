@@ -104,7 +104,8 @@ namespace LogLurker
                 currentNewLine = PreviousLine(stream);
             }
 
-            return newLines.Reverse();
+            newLines.Reverse();
+            return newLines;
         }
 
         private static string PreviousLine(Stream stream)
