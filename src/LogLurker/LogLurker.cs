@@ -9,7 +9,7 @@ namespace LogLurker
 
         private static readonly int DefaultInterval = 300;
         private string _lastLine;
-        private CancellationTokenSource _tokenSource;
+        private CancellationTokenSource? _tokenSource;
         private int _interval;
 
         #endregion
@@ -74,9 +74,12 @@ namespace LogLurker
 
         public void Stop()
         {
-            _tokenSource.Cancel();
-            _tokenSource.Dispose();
-            _tokenSource = null;
+            if (_tokenSource != null)
+            {
+                _tokenSource.Cancel();
+                _tokenSource.Dispose();
+                _tokenSource = null;
+            }
         }
 
         public void Dispose()
