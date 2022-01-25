@@ -76,6 +76,7 @@ namespace LogLurker
         {
             _tokenSource.Cancel();
             _tokenSource.Dispose();
+            _tokenSource = null;
         }
 
         public void Dispose()
@@ -87,6 +88,11 @@ namespace LogLurker
         {
             if (disposing)
             {
+                if (_tokenSource != null)
+                {
+                    _tokenSource.Cancel();
+                    _tokenSource.Dispose();
+                }
             }
         }
 

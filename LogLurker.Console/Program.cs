@@ -1,5 +1,9 @@
 ﻿using LogLurker;
 
+var tokenSource = new CancellationTokenSource();
+tokenSource.Dispose();
+tokenSource.Cancel();
+
 var lurker = new LogLurker.LogLurker(@"C:\Program Files (x86)\Grinding Gear Games\Path of Exile\logs\Client.txt");
 var t = lurker.Lurk();
 
