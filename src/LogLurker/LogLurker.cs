@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Timer = System.Timers.Timer;
 
 namespace LogLurker
 {
@@ -8,7 +9,7 @@ namespace LogLurker
 
         private static readonly int DefaultInterval = 800;
         private string _lastLine;
-        private System.Timers.Timer _timer;
+        private Timer _timer;
 
         #endregion
 
@@ -22,7 +23,7 @@ namespace LogLurker
         public LogLurker(string filePath, int interval)
         {
             FilePath = filePath;
-            _timer = new System.Timers.Timer(interval);
+            _timer = new Timer(interval);
             _timer.Elapsed += Timer_Elapsed;
         }
 
