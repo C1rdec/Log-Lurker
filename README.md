@@ -1,3 +1,7 @@
+`Install-Package LogLurker`
+
+<br/>
+
 ```cs
 using LogLurker;
 
