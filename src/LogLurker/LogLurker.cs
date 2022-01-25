@@ -52,6 +52,21 @@ namespace LogLurker
             _timer.Stop();
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _timer.Stop();
+                _timer.Dispose();
+                _timer.Elapsed -= Timer_Elapsed;
+            }
+        }
+
         private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
             IEnumerable<string> newLines;
@@ -118,21 +133,6 @@ namespace LogLurker
 
             stream.Position = oldPosition - 1;
             return Encoding.UTF8.GetString(bytes).Replace(Environment.NewLine, string.Empty);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _timer.Stop();
-                _timer.Dispose();
-                _timer.Elapsed -= Timer_Elapsed;
-            }
         }
 
         #endregion
