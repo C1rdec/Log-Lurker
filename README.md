@@ -1,4 +1,6 @@
-`Install-Package LogLurker`
+```Powershell
+Install-Package LogLurker
+```
 
 <br/>
 
