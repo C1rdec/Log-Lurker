@@ -8,6 +8,7 @@ namespace LogLurker
 
         private static readonly int DefaultInterval = 300;
         private string _lastLine;
+        private string _filePath;
         private CancellationTokenSource? _tokenSource;
         private int _interval;
 
@@ -22,7 +23,7 @@ namespace LogLurker
 
         public LogFileLurker(string filePath, int interval)
         {
-            FilePath = filePath;
+            _filePath = filePath;
             _interval = interval;
             _tokenSource = new CancellationTokenSource();
         }
@@ -31,7 +32,7 @@ namespace LogLurker
 
         #region Properties
 
-        public string FilePath { get; init; }
+        public string FilePath => _filePath;
 
         #endregion
 
